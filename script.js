@@ -1,7 +1,7 @@
 const WHATSAPP_NUMBER = '971525908695';
 const academyEmail = 'sheikhzahidquranacademy@gmail.com';
 // Paste the deployed Google Apps Script Web App URL here after one-time setup.
-const FORM_ENDPOINT = '';
+const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwDnaChsyxBT-uk-HLeDNRS0M1Bt2TZ0iO5GHCXkP1Jn3LafYH_PRtlLv7nNWfw-gAy/exec';
 // Optional: deploy the included Cloudflare Worker chatbot and paste its URL here.
 const CHATBOT_ENDPOINT = '';
 
