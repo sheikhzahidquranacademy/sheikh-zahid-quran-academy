@@ -340,3 +340,54 @@ header.header .brand img{width:100%!important;height:100%!important;object-fit:c
     object-fit: contain !important;
   }
 }
+/* MOBILE HERO — NEW PORTRAIT IMAGE CLICK AREAS */
+@media (max-width: 760px) {
+  .hero-exact-art .hero-hit-home {
+    left: 5%;
+    top: 8%;
+    width: 13%;
+    height: 5%;
+  }
+
+  .hero-exact-art .hero-hit-about {
+    left: 19%;
+    top: 8%;
+    width: 14%;
+    height: 5%;
+  }
+
+  .hero-exact-art .hero-hit-courses {
+    left: 35%;
+    top: 8%;
+    width: 15%;
+    height: 5%;
+  }
+
+  .hero-exact-art .hero-hit-packages {
+    left: 52%;
+    top: 8%;
+    width: 15%;
+    height: 5%;
+  }
+
+  .hero-exact-art .hero-hit-faqs {
+    left: 68%;
+    top: 8%;
+    width: 11%;
+    height: 5%;
+  }
+
+  .hero-exact-art .hero-hit-contact {
+    left: 80%;
+    top: 8%;
+    width: 18%;
+    height: 5%;
+  }
+
+  .hero-exact-art .hero-hit-trial {
+    left: 12%;
+    top: 90%;
+    width: 76%;
+    height: 9%;
+  }
+}
