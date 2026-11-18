@@ -325,3 +325,18 @@ header.header .brand img{width:100%!important;height:100%!important;object-fit:c
   .trial-form label:nth-of-type(9),.trial-form label:nth-of-type(10){grid-column:1;grid-row:auto}
   .trial-form button,.trial-form .form-note{grid-row:auto}
 }
+/* MOBILE HERO SIZE IMPROVEMENT */
+@media (max-width: 760px) {
+  .hero-exact-art {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .hero-exact-art .hero-exact-image {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+}
