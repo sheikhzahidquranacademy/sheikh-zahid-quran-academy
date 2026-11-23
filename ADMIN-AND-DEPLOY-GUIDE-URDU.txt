@@ -1,0 +1,20 @@
+شیخ زاہد قرآن اکیڈمی — اپڈیٹ پیکج
+
+اس پیکج میں ویب سائٹ کی طے شدہ فرنٹ اینڈ تبدیلیاں شامل ہیں۔ اصل Google Apps Script FORM_ENDPOINT کو جوں کا توں رکھا گیا ہے۔
+
+Student Reviews کے لیے Cloudflare D1 + Worker شامل ہیں، مگر یہ فیچر deploy کرنے کے بعد ہی فعال ہوگا:
+1) Cloudflare Dashboard میں D1 database بنائیں: sheikh-zahid-academy-reviews
+2) D1 Console میں reviews-schema.sql چلائیں۔
+3) wrangler.toml میں database_id اپنی اصل D1 ID سے تبدیل کریں۔
+4) Worker deploy کریں: npx wrangler deploy
+5) Secret سیٹ کریں: npx wrangler secret put ADMIN_TOKEN
+6) Secret سیٹ کریں: npx wrangler secret put RATE_SALT (کوئی لمبی random string)
+7) index.html میں script.js کے REVIEWS_ENDPOINT میں deployed Worker URL ڈالیں۔
+
+Admin review deletion endpoint: DELETE /admin/reviews/ID اور Authorization: Bearer ADMIN_TOKEN درکار ہے۔ محفوظ Admin Panel کے لیے dashboard access صرف مجاز شخص کو دیں؛ عوامی ویب سائٹ پر admin token ہرگز نہ رکھیں۔
+
+نوٹ: اس پیکج میں Reviews Worker اور D1 schema تیار ہیں، لیکن آپ کے Cloudflare اکاؤنٹ میں database/Worker خودکار طور پر deploy نہیں ہوئے۔ اس لیے database setup اور deployment کے بعد ہی public reviews حقیقتاً محفوظ اور publish ہوں گے۔
+
+Social icons فی الحال placeholder ہیں؛ TikTok/Facebook/Instagram کے اصل URLs ملنے پر # کو اصل links سے بدلیں۔
+
+Privacy Policy اور Terms & Conditions کے English صفحات شامل ہیں۔

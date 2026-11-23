@@ -4,6 +4,8 @@ const academyEmail = 'sheikhzahidquranacademy@gmail.com';
 const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwDnaChsyxBT-uk-HLeDNRS0M1Bt2TZ0iO5GHCXkP1Jn3LafYH_PRtlLv7nNWfw-gAy/exec';
 // Optional: deploy the included Cloudflare Worker chatbot and paste its URL here.
 const CHATBOT_ENDPOINT = '';
+// Set this to the deployed Cloudflare Reviews Worker URL after D1 setup.
+const REVIEWS_ENDPOINT = ''; // e.g. https://academy-reviews.your-subdomain.workers.dev
 
 const toggle = document.querySelector('.menu-toggle');
 const navs = [...document.querySelectorAll('.nav')];
@@ -56,16 +58,22 @@ document.getElementById('trialForm')?.addEventListener('submit', async event => 
     openWhatsApp(requestMessage(data));
   }
 });
-document.getElementById('reviewForm')?.addEventListener('submit', event => {
-  event.preventDefault();
-  const form = event.currentTarget;
-  if (!form.reportValidity()) return;
-  const data = formObject(form);
-  const message = ['Assalamu Alaikum! I would like to submit a student review for Sheikh Zahid Quran Academy.','',`Name: ${data.reviewName}`,`Course: ${data.reviewCourse}`,`Review: ${data.reviewText}`,'','Please contact me if you need permission to publish this review.'].join('\n');
-  openWhatsApp(message);
-  const note = document.getElementById('reviewNote');
-  if (note) note.textContent = 'WhatsApp has opened with your review. Please press Send. Reviews are not published without permission.';
+async function loadPublicReviews(){
+  const host=document.getElementById('publicReviews'); if(!host || !REVIEWS_ENDPOINT) return;
+  try{const r=await fetch(`${REVIEWS_ENDPOINT}/reviews`); if(!r.ok) throw new Error('Could not load reviews'); const data=await r.json();
+    host.replaceChildren(); (data.reviews||[]).forEach(item=>{const card=document.createElement('article');card.className='public-review';const name=document.createElement('strong');name.textContent=item.first_name;const course=document.createElement('small');course.textContent=item.course;const body=document.createElement('p');body.textContent=item.review;card.append(name,course,body);host.append(card);});
+  }catch(e){host.textContent='Student reviews are temporarily unavailable.';}
+}
+document.getElementById('reviewForm')?.addEventListener('submit', async event => {
+  event.preventDefault(); const form=event.currentTarget; if(!form.reportValidity()) return;
+  const data=formObject(form), note=document.getElementById('reviewNote'), button=form.querySelector('button[type="submit"]');
+  if(!REVIEWS_ENDPOINT){note.textContent='Review publishing is not active yet. The Cloudflare Worker and D1 database must be deployed first.';return;}
+  button.disabled=true; button.textContent='Publishing…';
+  try{const r=await fetch(`${REVIEWS_ENDPOINT}/reviews`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({firstName:data.reviewName,course:data.reviewCourse,review:data.reviewText})});const result=await r.json();if(!r.ok)throw new Error(result.error||'Submission failed');note.textContent='Thank you! Your review has been published.';form.reset();await loadPublicReviews();}
+  catch(e){note.textContent=e.message||'Could not publish your review. Please try again later.';}
+  finally{button.disabled=false;button.textContent='Publish Review ›';}
 });
+loadPublicReviews();
 
 // Academy assistant: accurate approved FAQ responses; optional AI endpoint can be connected later.
 const answers = [
@@ -98,3 +106,7 @@ function addChatMessage(text,who){const p=document.createElement('p');p.classNam
 async function askChat(question){if(!question.trim())return;addChatMessage(question,'user');const a=await getAnswer(question);addChatMessage(a,'bot');}
 document.getElementById('chatForm')?.addEventListener('submit',e=>{e.preventDefault();const input=document.getElementById('chatInput');const q=input.value.trim();input.value='';askChat(q);});
 document.querySelectorAll('.chatbot-quick button').forEach(b=>b.addEventListener('click',()=>askChat(b.dataset.question)));
+
+const allFaqs=[...document.querySelectorAll('.faq details')];
+allFaqs.forEach(item=>item.addEventListener('toggle',()=>{if(item.open)allFaqs.forEach(other=>{if(other!==item)other.open=false;});}));
+document.getElementById('viewAllQuestions')?.addEventListener('click',()=>{document.getElementById('faqs')?.scrollIntoView({behavior:'smooth'});chatClose();});

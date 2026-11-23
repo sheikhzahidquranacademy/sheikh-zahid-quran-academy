@@ -391,3 +391,25 @@ header.header .brand img{width:100%!important;height:100%!important;object-fit:c
     height: 9%;
   }
 }
+
+/* Approved portrait hero asset on mobile; desktop artwork remains untouched. */
+.hero-exact-art picture{display:block;width:100%;line-height:0}
+@media(max-width:760px){
+ .hero-exact-art .hero-exact-image{width:100%!important;height:auto!important;object-fit:contain!important}
+ .hero-exact-art .hero-hit-home{left:4.5%!important;top:12.5%!important;width:13%!important;height:4.5%!important}
+ .hero-exact-art .hero-hit-about{left:19.5%!important;top:12.5%!important;width:14%!important;height:4.5%!important}
+ .hero-exact-art .hero-hit-courses{left:35.5%!important;top:12.5%!important;width:15%!important;height:4.5%!important}
+ .hero-exact-art .hero-hit-packages{left:52%!important;top:12.5%!important;width:15%!important;height:4.5%!important}
+ .hero-exact-art .hero-hit-faqs{left:68.5%!important;top:12.5%!important;width:11%!important;height:4.5%!important}
+ .hero-exact-art .hero-hit-contact{left:80%!important;top:12.5%!important;width:18%!important;height:4.5%!important}
+ .hero-exact-art .hero-hit-trial{left:12%!important;top:86.5%!important;width:76%!important;height:9%!important}
+}
+.footer-social{display:flex;gap:14px;align-items:center;padding-top:8px}
+.footer-social a{width:38px;height:38px;border:1px solid #d9b65e;border-radius:50%;display:grid;place-items:center;color:#f3d27e}
+.footer-social svg{width:20px;height:20px}
+.public-reviews{display:grid;gap:9px;margin-top:16px}
+.public-review{background:#fffaf0;border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+.public-review strong{color:var(--green);margin-right:8px}
+.public-review small{color:#8b7957}
+.public-review p{margin:7px 0 0;font-size:13px;line-height:1.5}
+.chatbot-quick button:last-child{font-weight:700;background:#f3e5bf}
