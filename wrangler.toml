@@ -5,4 +5,4 @@ compatibility_date = "2026-11-23"
 [[d1_databases]]
 binding = "DB"
 database_name = "sheikh-zahid-academy-reviews"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "e6fa8785-51f3-49f6-9d2d-0edf1adef3cd"
