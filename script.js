@@ -1,11 +1,11 @@
 const WHATSAPP_NUMBER = '971525908695';
 const academyEmail = 'sheikhzahidquranacademy@gmail.com';
 // Paste the deployed Google Apps Script Web App URL here after one-time setup.
-const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwDnaChsyxBT-uk-HLeDNRS0M1Bt2TZ0iO5GHCXkP1Jn3LafYH_PRtlLv7nNWfw-gAy/exec';
+const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzBI6AQlmy-lC7SUEthf0RiA1svvRUXo04w95dYj1rho5bAnAIBTqOToTycAQtj5CQ/exec';
 // Optional: deploy the included Cloudflare Worker chatbot and paste its URL here.
 const CHATBOT_ENDPOINT = '';
-// Set this to the deployed Cloudflare Reviews Worker URL after D1 setup.
-const REVIEWS_ENDPOINT = ''; // e.g. https://academy-reviews.your-subdomain.workers.dev
+// Student Reviews use the existing Google Apps Script Web App; no separate Worker is needed.
+const REVIEWS_ENDPOINT = FORM_ENDPOINT;
 
 const toggle = document.querySelector('.menu-toggle');
 const navs = [...document.querySelectorAll('.nav')];
@@ -60,18 +60,19 @@ document.getElementById('trialForm')?.addEventListener('submit', async event => 
 });
 async function loadPublicReviews(){
   const host=document.getElementById('publicReviews'); if(!host || !REVIEWS_ENDPOINT) return;
-  try{const r=await fetch(`${REVIEWS_ENDPOINT}/reviews`); if(!r.ok) throw new Error('Could not load reviews'); const data=await r.json();
+  try{const r=await fetch(`${REVIEWS_ENDPOINT}?action=publicReviews`); if(!r.ok) throw new Error('Could not load reviews'); const data=await r.json();
     host.replaceChildren(); (data.reviews||[]).forEach(item=>{const card=document.createElement('article');card.className='public-review';const name=document.createElement('strong');name.textContent=item.first_name;const course=document.createElement('small');course.textContent=item.course;const body=document.createElement('p');body.textContent=item.review;card.append(name,course,body);host.append(card);});
+    if(!(data.reviews||[]).length) host.textContent='Be the first to share your learning experience.';
   }catch(e){host.textContent='Student reviews are temporarily unavailable.';}
 }
 document.getElementById('reviewForm')?.addEventListener('submit', async event => {
   event.preventDefault(); const form=event.currentTarget; if(!form.reportValidity()) return;
   const data=formObject(form), note=document.getElementById('reviewNote'), button=form.querySelector('button[type="submit"]');
-  if(!REVIEWS_ENDPOINT){note.textContent='Review publishing is not active yet. The Cloudflare Worker and D1 database must be deployed first.';return;}
-  button.disabled=true; button.textContent='Publishing…';
-  try{const r=await fetch(`${REVIEWS_ENDPOINT}/reviews`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({firstName:data.reviewName,course:data.reviewCourse,review:data.reviewText})});const result=await r.json();if(!r.ok)throw new Error(result.error||'Submission failed');note.textContent='Thank you! Your review has been published.';form.reset();await loadPublicReviews();}
-  catch(e){note.textContent=e.message||'Could not publish your review. Please try again later.';}
-  finally{button.disabled=false;button.textContent='Publish Review ›';}
+  if(!REVIEWS_ENDPOINT){note.textContent='Review submission is temporarily unavailable. Please contact the academy on WhatsApp.';return;}
+  button.disabled=true; button.textContent='Submitting…';
+  try{const r=await fetch(REVIEWS_ENDPOINT,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'submitReview',firstName:data.reviewName,course:data.reviewCourse,review:data.reviewText})});const result=await r.json();if(!r.ok||!result.success)throw new Error(result.message||'Submission failed');note.textContent=result.status==='approved'?'Thank you! Your review has been published.':'Thank you! Your review has been received and is awaiting academy approval.';form.reset();await loadPublicReviews();}
+  catch(e){note.textContent='We could not submit your review right now. Please try again later or contact us on WhatsApp.';}
+  finally{button.disabled=false;button.textContent='Submit Review ›';}
 });
 loadPublicReviews();
 
