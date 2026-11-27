@@ -68,10 +68,10 @@ async function loadPublicReviews(){
 document.getElementById('reviewForm')?.addEventListener('submit', async event => {
   event.preventDefault(); const form=event.currentTarget; if(!form.reportValidity()) return;
   const data=formObject(form), note=document.getElementById('reviewNote'), button=form.querySelector('button[type="submit"]');
-  if(!REVIEWS_ENDPOINT){note.textContent='Review submission is temporarily unavailable. Please contact the academy on WhatsApp.';return;}
+  if(!REVIEWS_ENDPOINT){note.textContent='Review submission is temporarily unavailable. Please try again later.';return;}
   button.disabled=true; button.textContent='Submitting…';
   try{const r=await fetch(REVIEWS_ENDPOINT,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'submitReview',firstName:data.reviewName,course:data.reviewCourse,review:data.reviewText})});const result=await r.json();if(!r.ok||!result.success)throw new Error(result.message||'Submission failed');note.textContent=result.status==='approved'?'Thank you! Your review has been published.':'Thank you! Your review has been received and is awaiting academy approval.';form.reset();await loadPublicReviews();}
-  catch(e){note.textContent='We could not submit your review right now. Please try again later or contact us on WhatsApp.';}
+  catch(e){note.textContent='We could not submit your review right now. Please try again later.';}
   finally{button.disabled=false;button.textContent='Submit Review ›';}
 });
 loadPublicReviews();
